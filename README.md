@@ -3,7 +3,8 @@ uglifyjs-maven-plugin
 
 A maven plugin that runs UglifyJS on a directory of javascript files.
 
-Based on the excellent https://github.com/kawasima/handlebars-maven-plugin
+Forked from https://github.com/tqh/uglifyjs-maven-plugin
+which in turn was based on the excellent https://github.com/kawasima/handlebars-maven-plugin
 
 Introduction
 ------------
@@ -19,11 +20,13 @@ uglifyjs:uglify      |Compress javascript files
 
 ### uglifyjs:uglify
 
+Currently the plugin is using the same artifact from the forked repository. This may change in the future.
+
 Full name
 :net.tqh.plugins:uglifyjs-maven-plugin:1.0:uglify
 
 Description
-:uglify Run UglifyJS on files in sourceDirectory.
+:uglify Run UglifyJS on files in sourceDirectory saving the minified files on the same directory.
 
 #### Optional parameters
 
@@ -31,7 +34,6 @@ Name             |Type    |Description
 -----------------|--------|--------------------------------------
 skip             |Boolean |Flag that allows user to skip execution of the plugin. (Currently only available when building this plugin from source.)
 sources          |FileSet |The directory containing javascript source files.
-outputDirectory  |String  |The output directory to put uglified files.
 encoding         |String  |Charset of javascript files.
 
 Repo
@@ -42,7 +44,7 @@ If you want to use this plugin in your maven project add the following plugin re
     <pluginRepositories>
       <pluginRepository>
         <id>uglifyjs-maven-plugin</id>
-        <url>https://raw.github.com/tqh/uglifyjs-maven-plugin/master/repo</url>
+        <url>https://raw.github.com/meiao/uglifyjs-maven-plugin/master/repo</url>
       </pluginRepository>
     </pluginRepositories>
 
@@ -74,7 +76,6 @@ and call the plugin during the build process, e.g.:
                                     <include>org/foo/lib</include>
                                 </includes>
                             </sources>
-                            <outputDirectory>${project.build.directory}/classes/js</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
