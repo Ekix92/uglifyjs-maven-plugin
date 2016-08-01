@@ -30,19 +30,13 @@ public class UglifyMojo extends AbstractMojo {
 	 */
 	private String encoding = "UTF-8";
 
-	/**
+ /**
 	 * {@link org.apache.maven.shared.model.fileset.FileSet} containing JavaScript source files.
 	 *
 	 * @required
 	 * @parameter expression="${sources}"
 	 */
 	protected FileSet sources;
-
-	/**
-	 * @required
-	 * @parameter expression="${outputDirectory}"
-	 */
-	protected File outputDirectory;
 
 	/**
 	 * Skip UglifyJS execution.
@@ -77,9 +71,6 @@ public class UglifyMojo extends AbstractMojo {
 			return;
 		}
 
-		if (outputDirectory == null)
-			throw new MojoExecutionException( "outputDirectory is not specified." );
-
 		try {
 			int count = uglify(getSourceFiles());
 			getLog().info( "Uglified " + count + " file(s)." );
@@ -111,20 +102,7 @@ public class UglifyMojo extends AbstractMojo {
 	}
 
 	private final File getOutputFile( File inputFile ) throws IOException {
-		final String relativePath = getSourceDir().toURI().relativize(inputFile.getParentFile().toURI()).getPath();
-		final File outputBaseDir = new File(outputDirectory, relativePath);
-		if (!outputBaseDir.exists())
-			FileUtils.forceMkdir(outputBaseDir);
-		return new File(outputBaseDir, inputFile.getName());
-	}
-
-	/**
-	 * Returns {@link File directory} containing JavaScript source {@link File files}.
-	 *
-	 * @return {@link File Directory} containing JavaScript source {@link File files}
-	 */
-	private File getSourceDir() {
-		return new File( sources.getDirectory() );
+		return new File(inputFile.getParentFile(), inputFile.getName().replace(".js", ".min.js"));
 	}
 
 	/**
@@ -136,10 +114,9 @@ public class UglifyMojo extends AbstractMojo {
 	private File[] getSourceFiles() throws IOException {
 		final FileSetManager fileSetManager = new FileSetManager();
 		final String[] includedFiles = fileSetManager.getIncludedFiles( sources );
-		final File sourceDir = getSourceDir();
 		final File[] sourceFiles = new File[includedFiles.length];
 		for (int i = 0; i < includedFiles.length; i++) {
-			sourceFiles[i] = new File( sourceDir, includedFiles[i] );
+			sourceFiles[i] = new File( sources.getDirectory(), includedFiles[i] );
 		}
 		return sourceFiles;
 	}
