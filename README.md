@@ -10,6 +10,7 @@ Introduction
 ------------
 
 uglifyjs-maven-plugin is used to run UglifyJS on the javascript files of your project.
+This fork was created due to a necessity of saving the uglyfied files in the same directory as the original files.
 
 Goals
 -----
