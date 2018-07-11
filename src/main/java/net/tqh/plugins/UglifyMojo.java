@@ -52,6 +52,13 @@ public class UglifyMojo extends AbstractMojo {
 	 */
 	protected boolean keepName = true;
 
+	/**
+	 * Set the output directory
+	 *
+	 * @parameter expression="${outputDirectory}"
+	 */
+	protected File outputDirectory;
+
 	class JavascriptContext {
 		final Context cx = Context.enter();
 		final ScriptableObject global = cx.initStandardObjects();
@@ -110,7 +117,15 @@ public class UglifyMojo extends AbstractMojo {
 
 	private final File getOutputFile( File inputFile ) throws IOException {
 		String fileName = keepName ? inputFile.getName() : inputFile.getName().replace(".js", ".min.js");
-		return new File(inputFile.getParentFile(), fileName);
+		File outputDir = inputFile.getParentFile();
+		if(outputDirectory != null){
+			final String relativePath = getSourceDir().toURI().relativize(inputFile.getParentFile().toURI()).getPath();
+			outputDir = new File(outputDirectory, relativePath);
+			if (!outputDir.exists())
+				FileUtils.forceMkdir(outputDir);
+		}
+
+		return new File(outputDir,fileName);
 	}
 
 	/**
@@ -127,6 +142,15 @@ public class UglifyMojo extends AbstractMojo {
 			sourceFiles[i] = new File( sources.getDirectory(), includedFiles[i] );
 		}
 		return sourceFiles;
+	}
+
+	/**
+	 * Returns {@link File directory} containing JavaScript source {@link File files}.
+	 *
+	 * @return {@link File Directory} containing JavaScript source {@link File files}
+	 */
+	private File getSourceDir() {
+		return new File( sources.getDirectory() );
 	}
 
 }
