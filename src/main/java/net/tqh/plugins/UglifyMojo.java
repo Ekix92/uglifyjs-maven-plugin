@@ -30,7 +30,7 @@ public class UglifyMojo extends AbstractMojo {
 	 */
 	private String encoding = "UTF-8";
 
- /**
+ 	/**
 	 * {@link org.apache.maven.shared.model.fileset.FileSet} containing JavaScript source files.
 	 *
 	 * @required
@@ -44,6 +44,13 @@ public class UglifyMojo extends AbstractMojo {
 	 * @parameter expression="${skip}" default-value="false"
 	 */
 	protected boolean skip = false;
+	
+	/**
+	 * Keep name of minified files.
+	 *
+	 * @parameter expression="${keepName}" default-value="true"
+	 */
+	protected boolean keepName = true;
 
 	class JavascriptContext {
 		final Context cx = Context.enter();
@@ -102,7 +109,8 @@ public class UglifyMojo extends AbstractMojo {
 	}
 
 	private final File getOutputFile( File inputFile ) throws IOException {
-		return new File(inputFile.getParentFile(), inputFile.getName().replace(".js", ".min.js"));
+		String fileName = keepName ? inputFile.getName() : inputFile.getName().replace(".js", ".min.js");
+		return new File(inputFile.getParentFile(), fileName);
 	}
 
 	/**
